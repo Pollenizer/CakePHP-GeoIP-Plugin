@@ -19,7 +19,7 @@ INSTALLATION
 USAGE
 ---------------
 
-    App::uses('PostageApp', 'Lib');
+    App::uses('GeoIp.GeoIpLocation', 'Model');
     $GeoIpLocation = new GeoIpLocation();
     $ipAddr = CakeRequest::clientIp(false);
     $location = $this->GeoIpLocation->find($ipAddr);
