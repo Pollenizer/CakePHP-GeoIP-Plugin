@@ -14,7 +14,7 @@ INSTALLATION
 
 1. Copy the plugin to app/Plugin/GeoIp
 2. Download the MaxMind GeoLite City Database at http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
-3. Uncompress the databse to app/Plugin/GeoIp/data/GeoIP.dat
+3. Uncompress the database to app/Plugin/GeoIp/data/GeoIP.dat
 
 USAGE
 ---------------
