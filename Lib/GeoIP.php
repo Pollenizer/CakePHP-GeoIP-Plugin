@@ -33,8 +33,6 @@
  * $Id: GeoIP.php 296763 2010-03-25 00:53:44Z clockwerx $
  */
 
-require_once 'PEAR/Exception.php';
-
 /**
  * GeoIP class provides an API for performing geo-location lookups based on IP
  * address.
@@ -405,7 +403,7 @@ class Net_GeoIP
      *
      * @return void
      *
-     * @throws PEAR_Exception if unable to open specified file or shared memory.
+     * @throws Exception if unable to open specified file or shared memory.
      */
     public function open($filename, $flags = null)
     {
@@ -418,13 +416,13 @@ class Net_GeoIP
                 $this->loadSharedMemory($filename);
                 $this->shmid = @shmop_open(self::SHM_KEY, "a", 0, 0);
                 if ($this->shmid === false) { // should never be false as loadSharedMemory() will throw Exc if cannot create
-                    throw new PEAR_Exception("Unable to open shared memory at key: " . dechex(self::SHM_KEY));
+                    throw new Exception("Unable to open shared memory at key: " . dechex(self::SHM_KEY));
                 }
             }
         } else {
             $this->filehandle = fopen($filename, "rb");
             if (!$this->filehandle) {
-                throw new PEAR_Exception("Unable to open file: $filename");
+                throw new Exception("Unable to open file: $filename");
             }
             if ($this->flags & self::MEMORY_CACHE) {
                 $s_array = fstat($this->filehandle);
@@ -441,13 +439,13 @@ class Net_GeoIP
      *
      * @return void
      *
-     * @throws PEAR_Exception     - if unable to read the db file.
+     * @throws Exception     - if unable to read the db file.
      */
     protected function loadSharedMemory($filename)
     {
         $fp = fopen($filename, "rb");
         if (!$fp) {
-            throw new PEAR_Exception("Unable to open file: $filename");
+            throw new Exception("Unable to open file: $filename");
         }
         $s_array = fstat($fp);
         $size = $s_array['size'];
@@ -578,7 +576,7 @@ class Net_GeoIP
      *
      * @param string $addr IP address (hostname not allowed)
      *
-     * @throws PEAR_Exception  - if IP address is invalid.
+     * @throws Exception  - if IP address is invalid.
      *                         - if database type is incorrect
      *
      * @return string ID for the country
@@ -587,10 +585,10 @@ class Net_GeoIP
     {
         $ipnum = ip2long($addr);
         if ($ipnum === false) {
-            throw new PEAR_Exception("Invalid IP address: " . var_export($addr, true), self::ERR_INVALID_IP);
+            throw new Exception("Invalid IP address: " . var_export($addr, true), self::ERR_INVALID_IP);
         }
         if ($this->databaseType !== self::COUNTRY_EDITION) {
-            throw new PEAR_Exception("Invalid database type; lookupCountry*() methods expect Country database.");
+            throw new Exception("Invalid database type; lookupCountry*() methods expect Country database.");
         }
         return $this->seekCountry($ipnum) - self::COUNTRY_BEGIN;
     }
@@ -603,7 +601,7 @@ class Net_GeoIP
      *
      * @return string 2-letter country code
      *
-     * @throws PEAR_Exception (see lookupCountryId())
+     * @throws Exception (see lookupCountryId())
      * @see lookupCountryId()
      */
     public function lookupCountryCode($addr)
@@ -618,7 +616,7 @@ class Net_GeoIP
      * @param string $addr IP address (hostname not allowed).
      *
      * @return string Country name
-     * @throws PEAR_Exception (see lookupCountryId())
+     * @throws Exception (see lookupCountryId())
      * @see lookupCountryId()
      */
     public function lookupCountryName($addr)
@@ -633,7 +631,7 @@ class Net_GeoIP
      * @param int $ipnum Result of ip2long() conversion.
      *
      * @return int Offset of start of record.
-     * @throws PEAR_Exception - if fseek() fails on the file or no results after traversing the database (indicating corrupt db).
+     * @throws Exception - if fseek() fails on the file or no results after traversing the database (indicating corrupt db).
      */
     protected function seekCountry($ipnum)
     {
@@ -645,7 +643,7 @@ class Net_GeoIP
                 $buf = shmop_read($this->shmid, 2 * $this->recordLength * $offset, 2 * $this->recordLength);
             } else {
                 if (fseek($this->filehandle, 2 * $this->recordLength * $offset, SEEK_SET) !== 0) {
-                    throw new PEAR_Exception("fseek failed");
+                    throw new Exception("fseek failed");
                 }
                 $buf = fread($this->filehandle, 2 * $this->recordLength);
             }
@@ -667,7 +665,7 @@ class Net_GeoIP
                 $offset = $x[0];
             }
         }
-        throw new PEAR_Exception("Error traversing database - perhaps it is corrupt?");
+        throw new Exception("Error traversing database - perhaps it is corrupt?");
     }
 
     /**
@@ -676,7 +674,7 @@ class Net_GeoIP
      *
      * @param string $addr IP address (hostname not allowed).
      *
-     * @throws PEAR_Exception  - if IP address is invalid.
+     * @throws Exception  - if IP address is invalid.
      *                         - if database is of wrong type
      *
      * @return string The organization
@@ -685,10 +683,10 @@ class Net_GeoIP
     {
         $ipnum = ip2long($addr);
         if ($ipnum === false) {
-            throw new PEAR_Exception("Invalid IP address: " . var_export($addr, true), self::ERR_INVALID_IP);
+            throw new Exception("Invalid IP address: " . var_export($addr, true), self::ERR_INVALID_IP);
         }
         if ($this->databaseType !== self::ORG_EDITION) {
-            throw new PEAR_Exception("Invalid database type; lookupOrg() method expects Org/ISP database.", self::ERR_DB_FORMAT);
+            throw new Exception("Invalid database type; lookupOrg() method expects Org/ISP database.", self::ERR_DB_FORMAT);
         }
         return $this->getOrg($ipnum);
     }
@@ -701,16 +699,16 @@ class Net_GeoIP
      *
      * @return array Array containing country code and region: array($country_code, $region)
      *
-     * @throws PEAR_Exception - if IP address is invalid.
+     * @throws Exception - if IP address is invalid.
      */
     public function lookupRegion($addr)
     {
         $ipnum = ip2long($addr);
         if ($ipnum === false) {
-            throw new PEAR_Exception("Invalid IP address: " . var_export($addr, true), self::ERR_INVALID_IP);
+            throw new Exception("Invalid IP address: " . var_export($addr, true), self::ERR_INVALID_IP);
         }
         if ($this->databaseType !== self::REGION_EDITION_REV0 && $this->databaseType !== self::REGION_EDITION_REV1) {
-            throw new PEAR_Exception("Invalid database type; lookupRegion() method expects Region database.", self::ERR_DB_FORMAT);
+            throw new Exception("Invalid database type; lookupRegion() method expects Region database.", self::ERR_DB_FORMAT);
         }
         return $this->getRegion($ipnum);
     }
@@ -723,17 +721,17 @@ class Net_GeoIP
      *
      * @return Net_GeoIP_Location The full location record.
      *
-     * @throws PEAR_Exception - if IP address is invalid.
+     * @throws Exception - if IP address is invalid.
      */
     public function lookupLocation($addr)
     {
         include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Location.php';
         $ipnum = ip2long($addr);
         if ($ipnum === false) {
-            throw new PEAR_Exception("Invalid IP address: " . var_export($addr, true), self::ERR_INVALID_IP);
+            throw new Exception("Invalid IP address: " . var_export($addr, true), self::ERR_INVALID_IP);
         }
         if ($this->databaseType !== self::CITY_EDITION_REV0 && $this->databaseType !== self::CITY_EDITION_REV1) {
-            throw new PEAR_Exception("Invalid database type; lookupLocation() method expects City database.");
+            throw new Exception("Invalid database type; lookupLocation() method expects City database.");
         }
         return $this->getRecord($ipnum);
     }
