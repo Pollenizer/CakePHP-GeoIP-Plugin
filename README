@@ -13,13 +13,16 @@ INSTALLATION
 ------------
 
 1. Copy the plugin to app/Plugin/GeoIp
-2. Download the MaxMind GeoLite City Database at http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
-3. Uncompress the database to app/Plugin/GeoIp/data/GeoIP.dat
+2. Add <code>CakePlugin::load('GeoIp');</code> to <code>bootstrap.php</code>
+3. Download the MaxMind GeoLite City Database at http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+4. Uncompress the database to app/Plugin/GeoIp/data/GeoIP.dat
 
 USAGE
 ---------------
 
-    App::uses('GeoIp.GeoIpLocation', 'Model');
+```php
+    App::uses('GeoIpLocation', 'GeoIp.Model');
     $GeoIpLocation = new GeoIpLocation();
     $ipAddr = CakeRequest::clientIp(false);
-    $location = $this->GeoIpLocation->find($ipAddr);
+    $location = $GeoIpLocation->find($ipAddr);
+```
