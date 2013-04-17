@@ -21,6 +21,8 @@
  * @see        http://pear.php.net/manual/en/package.networking.net-geoip.lookuplocation.php
  */
 
+App::uses('AppModel', 'Model');
+
 /**
  * Include PEAR Net_GeoIP class
  */
