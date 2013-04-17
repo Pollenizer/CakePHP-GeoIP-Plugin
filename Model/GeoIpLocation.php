@@ -49,6 +49,8 @@ class GeoIpLocation extends AppModel
      */
     public $name = 'GeoIpLocation';
 
+    public $useTable = false;
+
     /**
      * Find
      *
