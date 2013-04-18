@@ -21,6 +21,8 @@
  * @see        http://pear.php.net/manual/en/package.networking.net-geoip.lookuplocation.php
  */
 
+App::uses('AppModel', 'Model');
+
 /**
  * Include PEAR Net_GeoIP class
  */
@@ -47,6 +49,8 @@ class GeoIpLocation extends AppModel
      */
     public $name = 'GeoIpLocation';
 
+    public $useTable = false;
+
     /**
      * Find
      *
@@ -54,8 +58,9 @@ class GeoIpLocation extends AppModel
      * @return mixed Array of location data or null if no location found.
      * @access public
      */
-    public function find($ipAddr)
+    public function find($type = 'first', $query = array())
     {
+        $ipAddr = $type;
         $GeoIp = Net_GeoIP::getInstance(dirname(dirname(__FILE__)) . DS . 'data' . DS . 'GeoIP.dat');
         try {
             $location = $GeoIp->lookupLocation($ipAddr);
